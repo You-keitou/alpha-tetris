@@ -7,9 +7,11 @@
     "dev": "vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
+    "deploy": "gh-pages -d dist",
     "prepare": "husky"
   },
   "dependencies": {
+    "gh-pages": "^6.1.1",
     "vue": "^3.4.21"
   },
   "devDependencies": {
