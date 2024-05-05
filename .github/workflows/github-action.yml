@@ -32,11 +32,15 @@ jobs:
         uses: actions/checkout@v4
       - name: Set up Node
         uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
       - name: Install pnpm
-        run: npm install pnpm
+        run: npm install -g pnpm
+      - name: Cache pnpm store
+        uses: actions/cache@v3
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
       - name: Install dependencies
         run: pnpm install
       - name: Build
