@@ -4,3 +4,5 @@ export type BlockStatus = {
   y: number;
   rotation: number;
 };
+
+export type BlockShape = [number, ...[number, number][]];

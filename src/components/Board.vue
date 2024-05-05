@@ -7,14 +7,14 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { initBlock, initBoard } from '../utils/board/boardUtils';
-import { BlockStatus } from '../types/board';
+import { BlockShape, BlockStatus } from '../types/board';
 
 // ブロック形状の定義
 /**
  * [rotationMax, [dx, dy]]
  */
-const blockShapes = [
-  [0, []],
+const blockShapes: BlockShape[] = [
+  [0],
   [2, [-1, 0], [1, 0], [2, 0]],
   [2, [-1, 0], [0, 1], [1, 1]],
   [2, [-1, 0], [0, -1], [1, -1]],
@@ -51,9 +51,9 @@ const gameOver = ref(false);
 function putBlock(blockStatus: BlockStatus, remove = false, action = false): boolean {
   let { blockIndex, x, y, rotation } = blockStatus;
   const blockShape = [...blockShapes[blockIndex]];
-  const rotateMax = blockShape.shift();
+  const rotateMax = blockShape.shift() as number;
   blockShape.unshift([0, 0]);
-  for (let [dy, dx] of blockShape) {
+  for (let [dy, dx] of blockShape as [number, number][]) {
     for (let i = 0; i < rotation % rotateMax; i++) {
       [dx, dy] = [dy, -dx];
     }
