@@ -1,13 +1,13 @@
 <template>
-  <div class="w-60 flex flex-wrap">
+  <div class="min-w-60 w-60 flex flex-wrap">
     <div v-for="(cell, index) in boardCells" :key="index" :style="cell.style" class="w-6 h-6" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from 'vue';
-import { initBlock, initBoard } from '../utils/board/boardUtils';
-import { BlockShape, BlockStatus } from '../types/board';
+import { initBlock, initBoard } from '../../utils/board/boardUtils';
+import { BlockShape, BlockStatus } from '../../types/board';
 
 // ブロック形状の定義
 /**
