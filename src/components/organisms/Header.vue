@@ -14,8 +14,6 @@
   </header>
 </template>
 
-<script setup lang="ts">
-import { defineProps, defineEmits } from 'vue';
-</script>
+<script setup lang="ts"></script>
 
 <style lang="scss" scoped></style>
