@@ -8,7 +8,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue';
 import Header from '../organisms/Header.vue';
 </script>
 
