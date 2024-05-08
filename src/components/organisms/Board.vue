@@ -5,14 +5,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { initBlock, initBoard } from '../../utils/board/boardUtils';
 import { BlockShape, BlockStatus } from '../../types/board';
 import type { PlayerKeysConfig } from '../../types/settings/keySettings';
 
 const props = defineProps<{
+  gameStart: boolean;
+  gameEnd: boolean;
   keyConfig: PlayerKeysConfig;
 }>();
+
+const emit = defineEmits(['attack', 'gameOver']);
+
+//　タイマーを管理
+const timerId = ref<number | undefined>(undefined);
+
+// キーボードハンドラーを管理
+const onKeyDown = ref<(event: KeyboardEvent) => void>();
+
 // ブロック形状の定義
 /**
  * [rotationMax, [dx, dy]]
@@ -111,37 +122,51 @@ function eraseLine() {
         }
         y--;
       }
+      emit('attack');
     }
   }
 }
 
-onMounted(() => {
-  const intervalId = setInterval(() => {
-    // 自由落下させる
-    if (!move(0, 1, 0)) {
-      block.value = initBlock();
-      eraseLine();
-      if (!putBlock(block.value)) {
-        gameOver.value = true;
-        clearInterval(intervalId);
-      }
-    }
-  }, 500);
+watch(
+  () => props.gameStart,
+  () => {
+    if (props.gameStart) {
+      board.value = initBoard(10, 20);
+      timerId.value = setInterval(() => {
+        // 自由落下させる
+        if (!move(0, 1, 0)) {
+          block.value = initBlock();
+          eraseLine();
+          if (!putBlock(block.value)) {
+            gameOver.value = true;
+            clearInterval(timerId.value);
+            emit('gameOver');
+          }
+        }
+      }, 500);
 
-  const onKeyDown = (event: { key: string }) => {
-    if (event.key === props.keyConfig.controls.moveLeft && move(-1, 0, 0)) {
-    } else if (event.key === props.keyConfig.controls.moveRight && move(1, 0, 0)) {
-    } else if (event.key === props.keyConfig.controls.rotation && move(0, 0, 1)) {
-    } else if (event.key === props.keyConfig.controls.moveDown && move(0, 1, 0)) {
-    }
-  };
+      onKeyDown.value = (event: { key: string }) => {
+        if (event.key === props.keyConfig.controls.moveLeft && move(-1, 0, 0)) {
+        } else if (event.key === props.keyConfig.controls.moveRight && move(1, 0, 0)) {
+        } else if (event.key === props.keyConfig.controls.rotation && move(0, 0, 1)) {
+        } else if (event.key === props.keyConfig.controls.moveDown && move(0, 1, 0)) {
+        }
+      };
 
-  document.addEventListener('keydown', onKeyDown);
-  onUnmounted(() => {
-    document.removeEventListener('keydown', onKeyDown);
-    clearInterval(intervalId);
-  });
-});
+      document.addEventListener('keydown', onKeyDown.value);
+    }
+  },
+);
+
+watch(
+  () => props.gameEnd,
+  () => {
+    if (props.gameEnd) {
+      if (onKeyDown.value) document.removeEventListener('keydown', onKeyDown.value);
+      clearInterval(timerId.value);
+    }
+  },
+);
 </script>
 
 <style></style>
