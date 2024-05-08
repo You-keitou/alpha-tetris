@@ -8,7 +8,11 @@
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { initBlock, initBoard } from '../../utils/board/boardUtils';
 import { BlockShape, BlockStatus } from '../../types/board';
+import type { PlayerKeysConfig } from '../../types/settings/keySettings';
 
+const props = defineProps<{
+  keyConfig: PlayerKeysConfig;
+}>();
 // ブロック形状の定義
 /**
  * [rotationMax, [dx, dy]]
@@ -125,10 +129,10 @@ onMounted(() => {
   }, 500);
 
   const onKeyDown = (event: { key: string }) => {
-    if (event.key === 'ArrowLeft' && move(-1, 0, 0)) {
-    } else if (event.key === 'ArrowRight' && move(1, 0, 0)) {
-    } else if (event.key === 'ArrowUp' && move(0, 0, 1)) {
-    } else if (event.key === 'ArrowDown' && move(0, 1, 0)) {
+    if (event.key === props.keyConfig.controls.moveLeft && move(-1, 0, 0)) {
+    } else if (event.key === props.keyConfig.controls.moveRight && move(1, 0, 0)) {
+    } else if (event.key === props.keyConfig.controls.rotation && move(0, 0, 1)) {
+    } else if (event.key === props.keyConfig.controls.moveDown && move(0, 1, 0)) {
     }
   };
 
